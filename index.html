@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>სტუდენტის პროფილი</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --header-bg: #5c8989; /* მიახლოებული ზედა პანელის ფერი */
+            --bg-color: #eef1f5;
+            --border-color: #d1d5da;
+            --text-color: #333;
+            --label-bg: #f5f7f9;
+            --button-bg: #fcfcfc;
+            --primary-blue: #3b71ca;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif; /* უნივერსალური ფონტი */
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        /* --- Header / Top Navbar --- */
+        .header {
+            background-color: var(--header-bg);
+            height: 55px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a4478;
+            font-size: 20px;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-select {
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .messages {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .user-profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .user-profile-mini img {
+            position: absolute;
+            margin-left: 30px;
+            margin-top:-20px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid white;
+        }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .tabs {
+            height:25px;
+            display: flex;
+            background: #f4f6f8;
+            border: 1px solid var(--border-color);
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            font-weight: bold;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f4f6f8;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0 4px 4px 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            height:5px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* --- Profile Picture Upload Section --- */
+        .profile-upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-large-img {
+            padding-left:15px;
+            padding-right:15px;
+            background-color:#eaeaea;
+            width: 160px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid #e1e4e8;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .upload-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .upload-controls {
+            height:25px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: white;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .btn-upload {
+            background-color: #5c8989;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .btn-upload.action {
+            background-color: #f9f9f9;
+            color: #333;
+            border-left: 1px solid #aaa;
+        }
+
+        .file-name {
+            flex-grow: 1;
+            padding: 0 10px;
+            font-size: 10px;
+            color: #777;
+        }
+
+        .btn-save {
+            align-self: flex-start;
+            background: #f4f6f8;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 3px;
+            color: var(--primary-blue);
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* --- Data Table --- */
+        table.profile-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .profile-table th, .profile-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .profile-table th {
+            width: 30%;
+            background-color: var(--label-bg);
+            text-align: left;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .profile-table td {
+            background-color: white;
+            color: #111;
+        }
+
+        /* Form Inputs inside Table */
+        .input-group {
+            background-color: #f4f6f8;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            margin-bottom: 5px;
+            border-radius: 2px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            outline: none;
+            color: #333;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            background: white;
+        }
+
+        .badge-date {
+            background-color: #e2e6ea;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .section-title {
+            background-color: var(--label-bg) !important;
+            text-align: center !important;
+            font-weight: bold;
+            padding: 10px !important;
+        }
+        .logocircle {
+            width: 40px;
+        }
+        .spalna {
+            font-size:10px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-circle">
+                
+                
+                    <img class="logocircle" src="logo.png">
+                </i></div>
+            <i class="fa-solid fa-bars menu-icon"></i>
+        </div>
+        <div class="header-right">
+            <div class="lang-select">GE <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></div>
+            <div class="messages">
+                <i class="fa-regular fa-envelope"></i>
+                <span class="badge">43</span>
+            </div>
+            <div class="user-profile-mini">
+                <img src="b8ee27b1-2317-4e62-9429-3c54b2181bc6.jpg" alt="User Mini">
+                <span class="spalna">დავით ბზუკაშვილი</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="tabs">
+            <div class="tab">
+                <i class="fa-regular fa-user"></i> პროფილი
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa-regular fa-id-badge"></i> ანკეტა
+            </div>
+            
+            <div class="card-body">
+                
+                <div class="profile-upload-section">
+                    <img src="b8ee27b1-2317-4e62-9429-3c54b2181bc6.jpg" alt="Student Photo" class="profile-large-img">
+                    
+                    <div class="upload-title">სურათის ატვირთვა...</div>
+                    
+                    <div class="upload-controls">
+                        <button class="btn-upload">ფაილის არჩევა</button>
+                        <span class="file-name">ფაილი არ არის არ...</span>
+                        <button class="btn-upload action">ატვირთვა</button>
+                    </div>
+                </div>
+
+                <button class="btn-save"><i class="fa-solid fa-floppy-disk"></i> შენახვა</button>
+
+                <table class="profile-table">
+                    <tbody>
+                        <tr>
+                            <th>ID:</th>
+                            <td>426718</td>
+                        </tr>
+                        <tr>
+                            <th>პირადი ნომერი:</th>
+                            <td>40901042022</td>
+                        </tr>
+                        <tr>
+                            <th>სახელი, გვარი:</th>
+                            <td>დავით ბზუკაშვილი</td>
+                        </tr>
+                        <tr>
+                            <th>სახელი, გვარი<br>(ლათინურად):</th>
+                            <td>
+                                <div class="input-group">
+                                    <label>First name</label>
+                                    <input type="text" value="Davit">
+                                </div>
+                                <div class="input-group">
+                                    <label>Last name</label>
+                                    <input type="text" value="Bzukashvili">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>დაბადების თარიღი:</th>
+                            <td><span class="badge-date">20 ივლ. 2007</span></td>
+                        </tr>
+                        <tr>
+                            <th>სქესი:</th>
+                            <td>
+                                <div class="input-group">
+                                    <label>სქესი</label>
+                                    <select>
+                                        <option selected>მამრობითი</option>
+                                        <option>მდედრობითი</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ფაკულტეტი:</th>
+                            <td>ეკონომიკისა და ბიზნესის</td>
+                        </tr>
+                        <tr>
+                            <th>საფეხური:</th>
+                            <td>ბაკალავრიატი</td>
+                        </tr>
+                        <tr>
+                            <th>ძირითადი პროგრამა:</th>
+                            <td>ბიზნესის ადმინისტრირება (180 კრ)</td>
+                        </tr>
+                        <tr>
+                            <th>სპეციალიზაცია:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>მეორადი პროგრამა:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>ჯგუფი:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>სკოლის ატესტატის ნომერი:</th>
+                            <td>
+                                <div class="input-group">
+                                    <label>სკოლის ატესტატის ნომერი</label>
+                                    <input type="text" value="008998">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>სამხედრო სტატუსი:</th>
+                            <td>
+                                <div class="input-group">
+                                    <label>სამხედრო სტატუსი</label>
+                                    <select>
+                                        <option selected>წვევამდელი</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>სამხედრო აღრიცხვის ადგილი:</th>
+                            <td>
+                                <div class="input-group">
+                                    <label>სამხედრო აღრიცხვის ადგილი</label>
+                                    <input type="text" value="წნორი">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ნაკის ქულა:</th>
+                            <td>1833.9</td>
+                        </tr>
+                        <tr>
+                            <th>სემესტრი:</th>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <th>სტატუსი:</th>
+                            <td>აქტიური</td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="2" class="section-title">დამატებითი ანკეტური მონაცემები</td>
+                        </tr>
+                        
+                        <tr>
+                            <th>მოქალაქეობა:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>მეორე მოქალაქეობა:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>ეროვნება:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>ოჯახური მდგომარეობა:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>სოციალური სტატუსი:</th>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>სპეციალური სასწავლო საჭიროებები:</th>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
